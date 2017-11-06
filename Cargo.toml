@@ -1,0 +1,10 @@
+[package]
+name = "shunter-chnroutes"
+version = "0.1.0"
+authors = ["Yilin Chen <sticnarf@gmail.com>"]
+
+[dependencies]
+shunter = { git = "https://github.com/sticnarf/shunter.git" }
+iprange = "0.4.1"
+ipnet = "1.0.0"
+clap = "2.27.1"
