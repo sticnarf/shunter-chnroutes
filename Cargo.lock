@@ -6,6 +6,10 @@ dependencies = [
  "ipnet 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "iprange 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "shunter 0.1.0 (git+https://github.com/sticnarf/shunter.git)",
+ "slog 2.0.12 (registry+https://github.com/rust-lang/crates.io-index)",
+ "slog-async 2.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "slog-scope 4.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "slog-term 2.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]

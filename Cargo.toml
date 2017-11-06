@@ -8,3 +8,7 @@ shunter = { git = "https://github.com/sticnarf/shunter.git" }
 iprange = "0.4.1"
 ipnet = "1.0.0"
 clap = "2.27.1"
+slog = "2.0"
+slog-term = "2.2"
+slog-scope = "4.0"
+slog-async = "2.1"

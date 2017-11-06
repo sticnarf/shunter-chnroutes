@@ -2,6 +2,12 @@ extern crate clap;
 extern crate ipnet;
 extern crate iprange;
 extern crate shunter;
+#[macro_use]
+extern crate slog;
+extern crate slog_async;
+#[macro_use]
+extern crate slog_scope;
+extern crate slog_term;
 
 use std::net::SocketAddr;
 use std::io::{BufRead, BufReader};
@@ -63,7 +69,7 @@ fn main() {
     let chnroutes = matches.value_of("chnroutes").unwrap();
     let chnroutes = File::open(chnroutes).expect("Fail to open chnroutes file");
 
-
+    let _guard = init_logger(matches.is_present("verbose"));
 
     let socks5 = matches
         .value_of("socks5")
@@ -105,6 +111,7 @@ impl ChnRouter {
 
 impl Router for ChnRouter {
     fn route(&self, _from: SocketAddr, to: SocketAddr) -> Box<Proxy> {
+        debug!("{}", to);
         match to {
             SocketAddr::V4(addr) => if self.chnroutes.contains(addr.ip()) {
                 Box::new(Direct::new(to))
@@ -114,4 +121,30 @@ impl Router for ChnRouter {
             SocketAddr::V6(_) => Box::new(Direct::new(to)),
         }
     }
+}
+
+fn init_logger(verbose: bool) -> slog_scope::GlobalLoggerGuard {
+    use slog::{Drain, Level};
+
+    //    The following two lines are for sync logging.
+    //    let decorator = slog_term::PlainSyncDecorator::new(std::io::stdout());
+    //    let drain = slog_term::FullFormat::new(decorator).build().fuse();
+
+    let decorator = slog_term::TermDecorator::new().build();
+    let drain = slog_term::CompactFormat::new(decorator).build().fuse();
+    let drain = slog_async::Async::new(drain).build().fuse();
+
+    // Because slog will remove all debug logs on releases,
+    // Level::Debug is set if the program is set to verbose mode.
+    // Thus, when verbose mode is on, developers can check debug logs,
+    // while users will see logs at a least level of info.
+    let least_level = if verbose {
+        Level::Debug
+    } else {
+        Level::Warning
+    };
+    let drain = drain.filter_level(least_level).fuse();
+
+    let log = slog::Logger::root(drain, o!());
+    slog_scope::set_global_logger(log)
 }
